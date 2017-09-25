@@ -33,9 +33,6 @@ public class ProductStore {
     // Get the ProductLine:
     ProductLine productLine = ProductLineFactory.getProductLine();
 
-    // Get all Products:
-//    products = productLine.getProductsFilteredBy(p -> p.alcohol() > 70.0);
-
     Log.d(LOG_D, " productLine: " + productLine);
 
     products = productLine.getAllProducts();

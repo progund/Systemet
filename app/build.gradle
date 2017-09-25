@@ -33,8 +33,9 @@ dependencies {
     implementation 'com.android.support:design:26.1.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-  //  compile files('libs/systemet.jar')
+    compile files('libs/systemet.jar')
     //    implementation 'com.bea.xml:jsr173-ri:1.0'
     implementation files('libs/jsr173-ri-1.0.jar')
     implementation 'javax.xml.stream:stax-api:1.0-2'
+    implementation files('libs/systemet.jar')
 }

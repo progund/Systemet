@@ -1,0 +1,3 @@
+[submodule "tig015-weekly"]
+	path = tig015-weekly
+	url = git@github.com:progund/tig015-weekly.git

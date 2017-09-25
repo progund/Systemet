@@ -1,3 +1,4 @@
 <resources>
   <string name="app_name">Systemet</string>
+  <string name="title_activity_expandable_list">ExpandableListActivity</string>
 </resources>

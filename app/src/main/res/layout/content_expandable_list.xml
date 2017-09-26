@@ -10,8 +10,9 @@
 
   <ExpandableListView
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="match_parent"
     android:id="@+id/expandable_list"
+    android:layout_weight="0.8"
     >
   </ExpandableListView>
 

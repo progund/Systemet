@@ -20,7 +20,46 @@
 
   </android.support.design.widget.AppBarLayout>
 
-  <include layout="@layout/content_expandable_list" />
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior">
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Minimum alcohol" />
+      <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_bg"
+        android:text="99999999999999999999999999" />
+    </LinearLayout>
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior">
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Maximum price" />
+      <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_bg"
+        android:text="99999999999999999999999999" />
+    </LinearLayout>
+
+    <include layout="@layout/content_expandable_list" />
+  </LinearLayout>
 
   <android.support.design.widget.FloatingActionButton
     android:id="@+id/fab"

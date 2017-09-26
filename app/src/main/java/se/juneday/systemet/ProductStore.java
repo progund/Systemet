@@ -18,6 +18,8 @@ public class ProductStore {
   private static ProductStore store;
   private List<Product> products;
 
+  ProductLine productLine;
+
   public static ProductStore getInstance(Context c) {
     if (store == null) {
       store = new ProductStore(c);
@@ -29,9 +31,13 @@ public class ProductStore {
     return products;
   }
 
+  public ProductLine getProductLine() {
+    return productLine;
+  }
+
   private ProductStore(Context c) {
     // Get the ProductLine:
-    ProductLine productLine = ProductLineFactory.getProductLine();
+    productLine = ProductLineFactory.getProductLine();
 
     Log.d(LOG_D, " productLine: " + productLine);
 

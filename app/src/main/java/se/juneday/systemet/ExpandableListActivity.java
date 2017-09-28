@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import se.itu.systemet.domain.Product;
@@ -52,6 +53,8 @@ public class ExpandableListActivity extends AppCompatActivity {
     String sortimentFile= "/Download/sortiment.xml";
     String tmpFile= "/Download/sortiment1.xml";
     props.setProperty("sortiment-xml-file", sortimentDir + sortimentFile);
+    props.setProperty("product-line-class", "se.itu.systemet.storage.XMLRawProductLineFactory");
+
 
     /*
     try {
@@ -60,7 +63,6 @@ public class ExpandableListActivity extends AppCompatActivity {
       e.printStackTrace();
     }
     */
-
   }
 
 
@@ -74,6 +76,8 @@ public class ExpandableListActivity extends AppCompatActivity {
       Log.d(LOG_TAG, "nr products: " + products.size());
     }
 
+    Collections.sort(products, Product.BANG_FOR_BUCK_ORDER);
+
     mAdapter = new ExpandableProductAdapter(this, products);
     mListView.setAdapter(mAdapter);
     registerForContextMenu(mListView);
@@ -85,13 +89,22 @@ public class ExpandableListActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "onClick()");
         String alcohol = ((EditText)findViewById(R.id.alcohol_entry)).getText().toString();
         String price = ((EditText)findViewById(R.id.price_entry)).getText().toString();
+        String group = ((EditText)findViewById(R.id.group_entry)).getText().toString();
         if ( (!alcohol.equals("")) && (!price.equals(""))) {
           Log.d(LOG_TAG, "onClick() both");
           products = ProductStore.getInstance(null)
               .getProductLine()
               .getProductsFilteredBy(
                   p -> p.alcohol() > Integer.parseInt(alcohol) &&
+                      p.group().contains(group) &&
                       p.price() < Integer.parseInt(price) );
+        } else if ( (!group.equals("")) && (!price.equals("")) ) {
+          Log.d(LOG_TAG, "onClick() group and price");
+          products = ProductStore.getInstance(null)
+              .getProductLine()
+              .getProductsFilteredBy(
+                  p -> p.group().toLowerCase().contains(group.toLowerCase()) &&
+                      p.price() < Integer.parseInt(price));
         } else if (!alcohol.equals("")) {
 
           Log.d(LOG_TAG, "onClick() alcohol");
@@ -99,6 +112,13 @@ public class ExpandableListActivity extends AppCompatActivity {
               .getProductLine()
               .getProductsFilteredBy(
                   p -> p.alcohol() > Integer.parseInt(alcohol));
+        } else if (!group.equals("")) {
+
+          Log.d(LOG_TAG, "onClick() group");
+          products = ProductStore.getInstance(null)
+              .getProductLine()
+              .getProductsFilteredBy(
+                  p -> p.group().toLowerCase().contains(group.toLowerCase()));
         } else if (!price.equals("")) {
           Log.d(LOG_TAG, "onClick() price");
           products = ProductStore.getInstance(null)

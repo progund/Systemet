@@ -38,7 +38,10 @@ public class ExpandableProductAdapter extends BaseExpandableListAdapter {
     StringBuilder sb      = new StringBuilder();
 
     Product p = elements.get(groupPosition);
-    return " * " + p.name() + "\n" + p.alcohol() + " *";
+    return " * " + p.name() + "\n" + p.alcohol() + "\n"
+        + "bang: "
+        + p.alcohol()*p.volume()/p.price();
+
     //return elements.get(groupPosition).getName();
   }
 
@@ -103,7 +106,8 @@ public class ExpandableProductAdapter extends BaseExpandableListAdapter {
     }
 
     Product element = (Product) getGroup(groupPosition);
-    ((CheckedTextView) convertView).setText(element.toString());
+    String groupInfo = element.name() + " (" + element.group() + ")";
+    ((CheckedTextView) convertView).setText(groupInfo);
 
 
     return convertView;

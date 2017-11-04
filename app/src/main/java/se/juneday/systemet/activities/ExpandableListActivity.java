@@ -1,4 +1,4 @@
-package se.juneday.systemet;
+package se.juneday.systemet.activities;
 
 import android.os.Bundle;
 import android.os.Environment;
@@ -12,12 +12,15 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import se.itu.systemet.domain.Product;
-import se.juneday.systemet.expandable.ExpandableProductAdapter;
+import java.util.function.Predicate;
+import se.juneday.systemet.R;
+import se.juneday.systemet.domain.Product;
+import se.juneday.systemet.storage.ProductStore;
+import se.juneday.systemet.storage.ProductStoreFactory;
+import se.juneday.systemet.storage.ProductUtil;
+import se.juneday.systemet.storage.ProductsChangeListener;
 
 public class ExpandableListActivity extends AppCompatActivity {
 
@@ -27,7 +30,7 @@ public class ExpandableListActivity extends AppCompatActivity {
   private ExpandableListView mListView;
   private ExpandableProductAdapter mAdapter;
   private ExpandableListActivity me;
-
+  private ProductStore store;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +72,26 @@ public class ExpandableListActivity extends AppCompatActivity {
   public void onStart() {
     super.onStart();
 
-    products = ProductStore.getInstance(this).products();
+    store = ProductStoreFactory.productStore(this);
+
+    store.addProductsChangeListener(new ProductsChangeListener() {
+      @Override
+      public void productsChanged() {
+        Log.d(LOG_TAG, "productsChanged()");
+        mAdapter = new ExpandableProductAdapter(me, products);
+        mListView.setAdapter(mAdapter);
+      }
+    });
+    store.syncProducts();
+
+    products = store.products();
     if (products==null) {
       Log.d(LOG_TAG, "nr products: 0");
     } else {
       Log.d(LOG_TAG, "nr products: " + products.size());
     }
 
-    Collections.sort(products, Product.BANG_FOR_BUCK_ORDER);
+//    Collections.sort(products, Product.BANG_FOR_BUCK_ORDER);
 
     mAdapter = new ExpandableProductAdapter(this, products);
     mListView.setAdapter(mAdapter);
@@ -90,47 +105,29 @@ public class ExpandableListActivity extends AppCompatActivity {
         String alcohol = ((EditText)findViewById(R.id.alcohol_entry)).getText().toString();
         String price = ((EditText)findViewById(R.id.price_entry)).getText().toString();
         String group = ((EditText)findViewById(R.id.group_entry)).getText().toString();
-        if ( (!alcohol.equals("")) && (!price.equals(""))) {
-          Log.d(LOG_TAG, "onClick() both");
-          products = ProductStore.getInstance(null)
-              .getProductLine()
-              .getProductsFilteredBy(
-                  p -> p.alcohol() > Integer.parseInt(alcohol) &&
-                      p.group().contains(group) &&
-                      p.price() < Integer.parseInt(price) );
-        } else if ( (!group.equals("")) && (!price.equals("")) ) {
-          Log.d(LOG_TAG, "onClick() group and price");
-          products = ProductStore.getInstance(null)
-              .getProductLine()
-              .getProductsFilteredBy(
-                  p -> p.group().toLowerCase().contains(group.toLowerCase()) &&
-                      p.price() < Integer.parseInt(price));
-        } else if (!alcohol.equals("")) {
 
+        Predicate<Product> predicate = (p) -> true;
+
+        if (!alcohol.equals("")) {
           Log.d(LOG_TAG, "onClick() alcohol");
-          products = ProductStore.getInstance(null)
-              .getProductLine()
-              .getProductsFilteredBy(
-                  p -> p.alcohol() > Integer.parseInt(alcohol));
-        } else if (!group.equals("")) {
-
-          Log.d(LOG_TAG, "onClick() group");
-          products = ProductStore.getInstance(null)
-              .getProductLine()
-              .getProductsFilteredBy(
-                  p -> p.group().toLowerCase().contains(group.toLowerCase()));
-        } else if (!price.equals("")) {
-          Log.d(LOG_TAG, "onClick() price");
-          products = ProductStore.getInstance(null)
-              .getProductLine()
-              .getProductsFilteredBy(
-                  p -> p.price() < Integer.parseInt(price));
+          predicate = predicate.and(p -> p.alcohol() > Integer.parseInt(alcohol));
         }
+        if (!price.equals("")) {
+          Log.d(LOG_TAG, "onClick() price");
+          predicate = predicate.and(p -> p.price() < Integer.parseInt(price));
+        }
+        if (!group.equals("")) {
+          Log.d(LOG_TAG, "onClick() group: " + group);
+          predicate = predicate.and(p -> p.type().contains(group));
+        }
+        products = ProductUtil.getProductsFilteredBy(store.products(), predicate);
+
         mAdapter = new ExpandableProductAdapter(me, products);
         mListView.setAdapter(mAdapter);
         registerForContextMenu(mListView);
 
         Log.d(LOG_TAG, "onClick() products: " + products.size());
+        Log.d(LOG_TAG, "onClick() predicate: " + predicate);
 
       }
     });

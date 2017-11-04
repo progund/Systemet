@@ -1,4 +1,4 @@
-package se.juneday.systemet;
+package se.juneday.systemet.utils;
 
 import java.io.BufferedReader;
 import java.io.File;

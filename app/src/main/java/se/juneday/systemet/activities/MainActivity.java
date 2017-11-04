@@ -1,4 +1,4 @@
-package se.juneday.systemet;
+package se.juneday.systemet.activities;
 
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -6,23 +6,24 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import java.io.IOException;
 import java.util.Properties;
-import se.itu.systemet.domain.Product;
-import se.juneday.systemet.ProductStore;
 import se.juneday.systemet.R;
+import se.juneday.systemet.domain.Product;
+import se.juneday.systemet.storage.JsonProductStore;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getName();
 
     private ArrayAdapter<Product> adapter ;
+    private MainActivity me;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        me = this;
         Properties props = System.getProperties();
         String sortimentDir = Environment.getExternalStorageDirectory().getAbsolutePath();
         String sortimentFile= "/Download/sortiment.xml";
@@ -32,10 +33,13 @@ public class MainActivity extends AppCompatActivity {
         // Lookup ListView
         ListView listView = (ListView) findViewById(R.id.list);
 
+
         // Create Adapter
         adapter = new ArrayAdapter<Product>(this,
             android.R.layout.simple_list_item_1,
-            ProductStore.getInstance(this).products());
+            JsonProductStore.getInstance(this).products());
+
+
 
         // Set listView's adapter to the new adapter
         listView.setAdapter(adapter);

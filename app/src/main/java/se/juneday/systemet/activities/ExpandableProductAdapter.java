@@ -1,4 +1,4 @@
-package se.juneday.systemet.expandable;
+package se.juneday.systemet.activities;
 
 import android.app.Activity;
 import android.util.Log;
@@ -9,8 +9,10 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
 import java.util.List;
-import se.itu.systemet.domain.Product;
+//import se.itu.systemet.domain.Product;
+//import se.juneday.systemet.Product;
 import se.juneday.systemet.R;
+import se.juneday.systemet.domain.Product;
 
 /**
  * Created by hesa on 2017-09-23.
@@ -38,8 +40,11 @@ public class ExpandableProductAdapter extends BaseExpandableListAdapter {
     StringBuilder sb      = new StringBuilder();
 
     Product p = elements.get(groupPosition);
-    return " * " + p.name() + "\n" + p.alcohol() + "\n"
-        + "bang: "
+    return "Namn:" + p.name()
+//        + "\nGrupp:" + p.group()
+        + "\nAlkoholhalt:" + p.alcohol() +"%"
+        + "\nPris:" + p.price() +" sek"
+        + "\nBang: "
         + p.alcohol()*p.volume()/p.price();
 
     //return elements.get(groupPosition).getName();
@@ -106,7 +111,7 @@ public class ExpandableProductAdapter extends BaseExpandableListAdapter {
     }
 
     Product element = (Product) getGroup(groupPosition);
-    String groupInfo = element.name() + " (" + element.group() + ")";
+    String groupInfo = element.name();
     ((CheckedTextView) convertView).setText(groupInfo);
 
 

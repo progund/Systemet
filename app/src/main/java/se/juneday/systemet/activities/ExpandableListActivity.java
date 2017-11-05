@@ -1,5 +1,6 @@
 package se.juneday.systemet.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -17,16 +18,17 @@ import java.util.Properties;
 import java.util.function.Predicate;
 import se.juneday.systemet.R;
 import se.juneday.systemet.domain.Product;
+import se.juneday.systemet.activities.FilterActivity;
 import se.juneday.systemet.storage.ProductStore;
 import se.juneday.systemet.storage.ProductStoreFactory;
 import se.juneday.systemet.storage.ProductUtil;
+import se.juneday.systemet.storage.ProductUtil.ProductFilter;
 import se.juneday.systemet.storage.ProductsChangeListener;
 
 public class ExpandableListActivity extends AppCompatActivity {
 
   private final static String LOG_TAG = ExpandableListActivity.class.getSimpleName();
 
-  private List<Product> products;
   private ExpandableListView mListView;
   private ExpandableProductAdapter mAdapter;
   private ExpandableListActivity me;
@@ -47,18 +49,20 @@ public class ExpandableListActivity extends AppCompatActivity {
       public void onClick(View view) {
         Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             .setAction("Action", null).show();
+        Intent intent = new Intent(me, FilterActivity.class);
+        startActivity(intent);
       }
     });
+
     mListView = (ExpandableListView) findViewById(R.id.expandable_list);
 
-    Properties props = System.getProperties();
+/*    Properties props = System.getProperties();
     String sortimentDir = Environment.getExternalStorageDirectory().getAbsolutePath();
     String sortimentFile= "/Download/sortiment.xml";
     String tmpFile= "/Download/sortiment1.xml";
     props.setProperty("sortiment-xml-file", sortimentDir + sortimentFile);
     props.setProperty("product-line-class", "se.itu.systemet.storage.XMLRawProductLineFactory");
-
-
+*/
     /*
     try {
       XMLUtil.fixUTF8File(sortimentDir, sortimentFile, tmpFile);
@@ -68,6 +72,19 @@ public class ExpandableListActivity extends AppCompatActivity {
     */
   }
 
+  private void updateProductList(List<Product> list) {
+    Log.d(LOG_TAG, " updateProductList(): " + list.size());
+    mAdapter = new ExpandableProductAdapter(me, list);
+    mListView.setAdapter(mAdapter);
+  }
+
+  private void updateProductList() {
+    updateProductList(store.products());
+  }
+
+  private String textFieldToString(int id) {
+    return ((EditText)findViewById(id)).getText().toString();
+  }
 
   public void onStart() {
     super.onStart();
@@ -78,34 +95,25 @@ public class ExpandableListActivity extends AppCompatActivity {
       @Override
       public void productsChanged() {
         Log.d(LOG_TAG, "productsChanged()");
-        mAdapter = new ExpandableProductAdapter(me, products);
-        mListView.setAdapter(mAdapter);
+        updateProductList();
       }
     });
     store.syncProducts();
 
-    products = store.products();
-    if (products==null) {
-      Log.d(LOG_TAG, "nr products: 0");
-    } else {
-      Log.d(LOG_TAG, "nr products: " + products.size());
-    }
-
-//    Collections.sort(products, Product.BANG_FOR_BUCK_ORDER);
-
-    mAdapter = new ExpandableProductAdapter(this, products);
-    mListView.setAdapter(mAdapter);
+    updateProductList();
     registerForContextMenu(mListView);
+
 
     Button okButton = findViewById(R.id.ok_button);
     okButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
         Log.d(LOG_TAG, "onClick()");
-        String alcohol = ((EditText)findViewById(R.id.alcohol_entry)).getText().toString();
-        String price = ((EditText)findViewById(R.id.price_entry)).getText().toString();
-        String group = ((EditText)findViewById(R.id.group_entry)).getText().toString();
+        String alcohol = textFieldToString(R.id.alcohol_entry);
+        String price = textFieldToString(R.id.price_entry);
+        String group = textFieldToString(R.id.group_entry);
 
+        // TODO: is there a better (read sane) way to create an "empty" Predicate
         Predicate<Product> predicate = (p) -> true;
 
         if (!alcohol.equals("")) {
@@ -120,18 +128,20 @@ public class ExpandableListActivity extends AppCompatActivity {
           Log.d(LOG_TAG, "onClick() group: " + group);
           predicate = predicate.and(p -> p.type().contains(group));
         }
-        products = ProductUtil.getProductsFilteredBy(store.products(), predicate);
+        List<Product> products = ProductUtil.getProductsFilteredBy(store.products(), predicate);
 
-        mAdapter = new ExpandableProductAdapter(me, products);
-        mListView.setAdapter(mAdapter);
-        registerForContextMenu(mListView);
+/*      Example on Using anonymous inner class
+        products = ProductUtil.filter(store.products(), new ProductFilter() {
 
-        Log.d(LOG_TAG, "onClick() products: " + products.size());
-        Log.d(LOG_TAG, "onClick() predicate: " + predicate);
-
+          @Override
+          public boolean keep(Product product) {
+            int max = Integer.parseInt(price);
+            return product.price() < max ;
+          }
+        });
+*/
+        updateProductList(products);
       }
     });
-
   }
-
 }

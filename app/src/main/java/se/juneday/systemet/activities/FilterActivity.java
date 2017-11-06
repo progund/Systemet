@@ -10,11 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,10 +37,9 @@ public class FilterActivity extends AppCompatActivity {
 
     ListView listview = (ListView) findViewById(R.id.filters);
 
-    List<String> variables = Arrays.asList(new String[] { "Price", "Alcohol", "Type" });
-
-    FilterArrayAdapter adapter = new FilterArrayAdapter(this,
-        /*android.R.layout.simple_list_item_1*/ R.layout.filter_row, variables);
+    List<String> initString = new ArrayList<>();
+    initString.add("");
+    FilterArrayAdapter adapter = new FilterArrayAdapter(this, initString);
     listview.setAdapter(adapter);
 
   }

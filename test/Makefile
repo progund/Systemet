@@ -4,11 +4,10 @@ CLASSPATH=$(SYS_PATH):.
 
 CLASSES= \
   ../app/src/main/java/se/juneday/systemet/storage/ProductUtil.class \
-  ../app/src/main/java/se/juneday/systemet/domain/Product.java \
-  ../app/src/main/java/se/juneday/systemet/domain/ProductPredicate.java \
-  ../app/src/main/java/se/juneday/systemet/storage/ProductStore.java \
-  ../app/src/main/java/se/juneday/systemet/storage/FakedProductStore.java \
-  ../app/src/main/java/se/juneday/systemet/activities/ \
+  ../app/src/main/java/se/juneday/systemet/domain/Product.class \
+  ../app/src/main/java/se/juneday/systemet/domain/ProductPredicate.class \
+  ../app/src/main/java/se/juneday/systemet/storage/ProductStore.class \
+  ../app/src/main/java/se/juneday/systemet/storage/FakedProductStore.class \
   android/util/Log.class \
   android/content/Context.class \
   ProductPredicateTest.class
@@ -21,3 +20,7 @@ all: $(CLASSES)
 
 run: $(CLASSES)
 	java  -cp $(CLASSPATH) ProductPredicateTest
+
+clean:
+	rm -f $(CLASSES)
+

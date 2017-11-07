@@ -15,28 +15,28 @@ import android.widget.Spinner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import se.juneday.systemet.R;
+import se.juneday.systemet.domain.ProductPredicate;
 
 /**
  * Created by hesa on 2017-11-05.
  */
 
-public class FilterArrayAdapter extends ArrayAdapter<String> {
+public class FilterArrayAdapter extends ArrayAdapter<ProductPredicate> {
 
   private static final String LOG_TAG = FilterArrayAdapter.class.getName();
   private FilterArrayAdapter me;
   private final Context context;
+  private List<ProductPredicate> predicates;
 
-  private static List<String> values = Arrays
-      .asList(new String[]{"Price", "Alcohol", "Type", "Tycho", "Brahe"});
-
-  private static List<String> operations = Arrays.asList(new String[]{"<", ">", "="});
-
-  public FilterArrayAdapter(Context context, List<String> initial) {
-    super(context, R.layout.filter_row, initial );
+  public FilterArrayAdapter(Context context, List<ProductPredicate> predicates) {
+    super(context, R.layout.filter_row, predicates);
     this.context = context;
-    Log.d(LOG_TAG, " values: " + values.size());
+    Log.d(LOG_TAG, " values: " + predicates.size());
     me = this;
+    this.predicates = predicates;
   }
 
   @Override
@@ -64,7 +64,10 @@ public class FilterArrayAdapter extends ArrayAdapter<String> {
 
     ArrayAdapter<String> spinnerAdapter;
     spinnerAdapter = new ArrayAdapter<String>(context,
-        android.R.layout.simple_spinner_item, values);
+        android.R.layout.simple_spinner_item,
+        Stream.of(ProductPredicate.VARIABLES.values())
+        .map(Enum::name)
+        .collect(Collectors.toList()));
     Log.d(LOG_TAG, " adapter: " + spinnerAdapter);
     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     variableSpinner.setAdapter(spinnerAdapter);
@@ -72,7 +75,10 @@ public class FilterArrayAdapter extends ArrayAdapter<String> {
     Spinner opSpinner = (Spinner)rowView.findViewById(R.id.op_spinner);
     ArrayAdapter<String> opSpinnerAdapter;
     opSpinnerAdapter= new ArrayAdapter<String>(context,
-        android.R.layout.simple_spinner_item, operations);
+        android.R.layout.simple_spinner_item,
+        Stream.of(ProductPredicate.OPERATIONS.values())
+            .map(Enum::name)
+            .collect(Collectors.toList()));
     Log.d(LOG_TAG, " adapter: " + opSpinnerAdapter);
     opSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     opSpinner.setAdapter(opSpinnerAdapter);
@@ -82,6 +88,7 @@ public class FilterArrayAdapter extends ArrayAdapter<String> {
     Log.d(LOG_TAG, " removeButton: " + removeButton);
 
     removeButton.setOnClickListener(new OnClickListener() {
+
       @Override
       public void onClick(View view) {
         Log.d(LOG_TAG, " onClick: removeButton" + view );
@@ -90,10 +97,10 @@ public class FilterArrayAdapter extends ArrayAdapter<String> {
 //        ((AdapterView)view.getParent().getParent()).removeView((View)view.getParent());
         Integer index = (Integer) view.getTag();
         Log.d(LOG_TAG,"    index: " + index);
-        values.remove(index.intValue());
+        predicates.remove(index.intValue());
         notifyDataSetChanged();
-
       }
+
     });
 
     return rowView;

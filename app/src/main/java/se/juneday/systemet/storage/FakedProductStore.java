@@ -30,6 +30,7 @@ public class FakedProductStore implements ProductStore {
     products = new ArrayList<>();
     products.add(new Product.Builder().name("Renat").alcohol(43).price(250).volume(700).type("Sprit").build());
     products.add(new Product.Builder().name("Breznac").alcohol(4.3).price(9.9).volume(33).type("Öl").build());
+    products.add(new Product.Builder().name("Urquell").alcohol(4.4).price(14.9).volume(33).type("Öl").build());
     products.add(new Product.Builder().name("Ardbeg").alcohol(40).price(350).volume(700).type("Whisky").build());
   }
 

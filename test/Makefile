@@ -1,0 +1,23 @@
+SYS_PATH=../app/src/main/java/
+
+CLASSPATH=$(SYS_PATH):.
+
+CLASSES= \
+  ../app/src/main/java/se/juneday/systemet/storage/ProductUtil.class \
+  ../app/src/main/java/se/juneday/systemet/domain/Product.java \
+  ../app/src/main/java/se/juneday/systemet/domain/ProductPredicate.java \
+  ../app/src/main/java/se/juneday/systemet/storage/ProductStore.java \
+  ../app/src/main/java/se/juneday/systemet/storage/FakedProductStore.java \
+  ../app/src/main/java/se/juneday/systemet/activities/ \
+  android/util/Log.class \
+  android/content/Context.class \
+  ProductPredicateTest.class
+
+%.class:%.java
+	javac -cp $(CLASSPATH) $<
+
+all: $(CLASSES)
+
+
+run: $(CLASSES)
+	java  -cp $(CLASSPATH) ProductPredicateTest

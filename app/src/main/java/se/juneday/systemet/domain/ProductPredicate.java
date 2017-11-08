@@ -115,4 +115,13 @@ public class ProductPredicate implements Predicate<Product>{
   public void setValue(String value) {
     this.value = value;
   }
+
+  public void setVariable(VARIABLES variable) {
+    this.variable = variable;
+  }
+
+  public void setOperation(OPERATIONS operation) {
+    this.operation = operation;
+  }
+
 }

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import se.juneday.systemet.R;
 import se.juneday.systemet.domain.Product;
@@ -37,6 +38,8 @@ public class FilterActivity extends AppCompatActivity {
 
   private static final String LOG_TAG = FilterActivity.class.getName();
   private FilterArrayAdapter adapter;
+  private ListView listview;
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +48,8 @@ public class FilterActivity extends AppCompatActivity {
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    ListView listview = (ListView) findViewById(R.id.filters);
+
+    listview = (ListView) findViewById(R.id.filters);
 
     List<ProductPredicate> predicates = new ArrayList<>();
     predicates.add(new ProductPredicate(VARIABLES.ALCOHOL, OPERATIONS.GT));
@@ -75,18 +79,31 @@ public class FilterActivity extends AppCompatActivity {
       adapter.add(new ProductPredicate());
       return true;
     } else if (id == R.id.action_calc) {
-
       Predicate<Product> predicates = (p) -> true;
       Log.d(LOG_TAG, " predicates: " + adapter.getCount());
       for(int i=0 ; i<adapter.getCount() ; i++){
-        ProductPredicate prodPred= (ProductPredicate) adapter.getItem(i);
-        prodPred.setValue("13");
+        ProductPredicate prodPred = (ProductPredicate) adapter.getItem(i);
+//        View view = adapter.getView(i, null, listview);
+        View view = adapter.getView(i);
+
+        String var = ((Spinner)view.findViewById(R.id.variable_spinner)).getSelectedItem().toString();
+        String op = ((Spinner)view.findViewById(R.id.op_spinner)).getSelectedItem().toString();
+        String val = ((EditText)view.findViewById(R.id.value)).getText().toString();
+
+        Log.d(LOG_TAG, " * view: " + view);
+        Log.d(LOG_TAG, " * spinner: " + var);
+        Log.d(LOG_TAG, " * operation: " + op);
+        Log.d(LOG_TAG, " * value: '" + val + "'");
+        prodPred.setValue(val);
+        prodPred.setVariable(VARIABLES.valueOf(var));
+        prodPred.setOperation(OPERATIONS.valueOf(op));
+
         predicates = predicates.and(prodPred);
         Log.d(LOG_TAG, " * " + prodPred);
       }
       List<Product> products = ProductStoreFactory.productStore(null).products();
       Log.d(LOG_TAG, " * products: " + products.size());
-      products = ProductUtil.getProductsFilteredBy(products, predicates);
+   //   products = ProductUtil.getProductsFilteredBy(products, predicates);
       Log.d(LOG_TAG, " * products: " + products.size());
       return true;
 

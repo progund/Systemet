@@ -42,13 +42,19 @@ public class FakedProductStore implements ProductStore {
   @Override
   public void syncProducts() {
     try {
-      Thread.sleep(2000);
+      Thread.sleep(500);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
     for (ProductsChangeListener l : listeners) {
       l.productsChanged();
     }
+  }
+
+  @Override
+  public void close() {
+
+
   }
 
   @Override

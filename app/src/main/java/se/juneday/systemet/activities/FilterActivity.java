@@ -37,7 +37,8 @@ import se.juneday.systemet.storage.ProductUtil;
 public class FilterActivity extends AppCompatActivity {
 
   private static final String LOG_TAG = FilterActivity.class.getName();
-  private FilterArrayAdapter adapter;
+//  private FilterArrayAdapter adapter;
+  private FilterBaseAdapter adapter;
   private ListView listview;
 
 
@@ -53,7 +54,7 @@ public class FilterActivity extends AppCompatActivity {
 
     List<ProductPredicate> predicates = new ArrayList<>();
     predicates.add(new ProductPredicate(VARIABLES.ALCOHOL, OPERATIONS.GT));
-    adapter = new FilterArrayAdapter(this, predicates);
+    adapter = new FilterBaseAdapter(this, predicates);
     listview.setAdapter(adapter);
   }
 
@@ -83,20 +84,24 @@ public class FilterActivity extends AppCompatActivity {
       Log.d(LOG_TAG, " predicates: " + adapter.getCount());
       for(int i=0 ; i<adapter.getCount() ; i++){
         ProductPredicate prodPred = (ProductPredicate) adapter.getItem(i);
-//        View view = adapter.getView(i, null, listview);
-        View view = adapter.getView(i);
+        View view = adapter.getView(i, null, listview);
+        //View view = adapter.getView(i);
 
+        // TODO: bring back the below
         String var = ((Spinner)view.findViewById(R.id.variable_spinner)).getSelectedItem().toString();
         String op = ((Spinner)view.findViewById(R.id.op_spinner)).getSelectedItem().toString();
-        String val = ((EditText)view.findViewById(R.id.value)).getText().toString();
+        String val = ((EditText)view.findViewById(R.id.pred_value)).getText().toString();
 
         Log.d(LOG_TAG, " * view: " + view);
+        Log.d(LOG_TAG, " * valueView: " + ((EditText)view.findViewById(R.id.pred_value)));
+        Log.d(LOG_TAG, " * valueView: " + ((EditText)view.findViewById(R.id.pred_value)).getText());
         Log.d(LOG_TAG, " * spinner: " + var);
         Log.d(LOG_TAG, " * operation: " + op);
+        Log.d(LOG_TAG, " * operation: " + prodPred);
         Log.d(LOG_TAG, " * value: '" + val + "'");
         prodPred.setValue(val);
-        prodPred.setVariable(VARIABLES.valueOf(var));
-        prodPred.setOperation(OPERATIONS.valueOf(op));
+     //   prodPred.setVariable(VARIABLES.valueOf(var));
+       // prodPred.setOperation(OPERATIONS.valueOf(op));
 
         predicates = predicates.and(prodPred);
         Log.d(LOG_TAG, " * " + prodPred);

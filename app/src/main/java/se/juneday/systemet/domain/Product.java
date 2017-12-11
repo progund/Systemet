@@ -1,5 +1,6 @@
 package se.juneday.systemet.domain;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -42,8 +43,9 @@ import java.util.Comparator;
  * </pre>
  * </p>
  */
-public class Product {
+public class Product implements Serializable {
 
+  private static final long serialVersionUID = -7021358931007336368L;
   private String name;
   private double price; // SEK
   private double alcohol; // % alcohol by volume

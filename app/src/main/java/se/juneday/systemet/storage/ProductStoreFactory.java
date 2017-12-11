@@ -13,8 +13,8 @@ public enum ProductStoreFactory {
 
   public static ProductStore productStore(Context c) {
     if (store==null) {
-//      store = JsonProductStore.getInstance(c);
-      store = FakedProductStore.getInstance(c);
+      store = JsonProductStore.getInstance(c);
+//      store = FakedProductStore.getInstance(c);
     }
     return store;
   }

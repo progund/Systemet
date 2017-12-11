@@ -32,6 +32,7 @@ public class FilterArrayAdapter extends ArrayAdapter<ProductPredicate> {
   private FilterArrayAdapter me;
   private final Context context;
   private List<ProductPredicate> predicates;
+  private LayoutInflater inflater;
 
   private Map<Integer, View> views;
 
@@ -42,31 +43,36 @@ public class FilterArrayAdapter extends ArrayAdapter<ProductPredicate> {
   */
   public FilterArrayAdapter(Context context, List<ProductPredicate> predicates) {
     super(context, R.layout.filter_row, /*R.id.value,*/ predicates);
+    Log.d(LOG_TAG, "FilterArrayAdapter constructor");
     this.context = context;
     Log.d(LOG_TAG, " values: " + predicates.size());
     me = this;
     this.predicates = predicates;
     views = new HashMap<>();
+    inflater = (LayoutInflater) context
+        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
   }
 
+  /*
   @Override
   public ProductPredicate getItem(int position) {
+    Log.d(LOG_TAG, " getItem(" + position + ") ==> " + predicates.get(position));
     return predicates.get(position);
   }
+  */
 
-  @Override
+/*  @Override
   public long getItemId(int position) {
-    return getItem(position).hashCode();
+    return predicates.get(position).Id;
+    //return getItem(position).hashCode();
   }
-
+*/
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
     Log.d(LOG_TAG, " ------> getView position: " + position + "  checking views:" + (convertView==null?"null":convertView.hashCode()) + " " + convertView) ;
 
     if (convertView==null) {
       Log.d(LOG_TAG, " getView NULL");
-      LayoutInflater inflater = (LayoutInflater) context
-          .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
       View rowView = inflater.inflate(R.layout.filter_row, null);
 
@@ -79,9 +85,9 @@ public class FilterArrayAdapter extends ArrayAdapter<ProductPredicate> {
 
   */
 
-      EditText text = (EditText) rowView.findViewById(R.id.value);
-      Log.d(LOG_TAG, " view: " + text);
-
+      EditText text = (EditText) rowView.findViewById(R.id.pred_value);
+      Log.d(LOG_TAG, "value view: " + text.getText().toString());
+/*
       Spinner variableSpinner = (Spinner) rowView.findViewById(R.id.variable_spinner);
       Log.d(LOG_TAG, " spinner: " + variableSpinner);
 
@@ -134,18 +140,20 @@ public class FilterArrayAdapter extends ArrayAdapter<ProductPredicate> {
       views.put(position, rowView);
       Log.d(LOG_TAG, " views. contains: " + views.size());
       convertView = rowView;
+*/
     }
 
     Log.d(LOG_TAG, " <------ getView position: " + position + "  checking views.");
     return convertView;
   }
 
-
+/*
   @Override
   public int getCount() {
+    Log.d(LOG_TAG, " <------ getCount: " + predicates.size());
     return predicates.size();
   }
-
+*/
 
   public View getView(int pos) {
     Log.d(LOG_TAG, " views.get(" + pos + ") --->  " + views.get(pos));
@@ -158,7 +166,6 @@ public class FilterArrayAdapter extends ArrayAdapter<ProductPredicate> {
   public void add(ProductPredicate p) {
     predicates.add(p);
     notifyDataSetChanged();
-
   }
 
   @Override

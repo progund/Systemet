@@ -1,6 +1,10 @@
 package se.juneday.systemet.activities;
 
+import android.app.usage.NetworkStatsManager;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -19,11 +23,16 @@ import java.util.function.Predicate;
 import se.juneday.systemet.R;
 import se.juneday.systemet.domain.Product;
 import se.juneday.systemet.activities.FilterActivity;
+import se.juneday.systemet.domain.ProductPredicate;
+import se.juneday.systemet.storage.JsonProductStore;
 import se.juneday.systemet.storage.ProductStore;
 import se.juneday.systemet.storage.ProductStoreFactory;
 import se.juneday.systemet.storage.ProductUtil;
 import se.juneday.systemet.storage.ProductUtil.ProductFilter;
 import se.juneday.systemet.storage.ProductsChangeListener;
+import se.juneday.systemet.utils.NetworkChecker;
+import se.juneday.systemet.utils.NetworkChecker.NetworkCheckerListener;
+import se.juneday.systemet.utils.Session;
 
 public class ExpandableListActivity extends AppCompatActivity {
 
@@ -49,7 +58,7 @@ public class ExpandableListActivity extends AppCompatActivity {
       public void onClick(View view) {
         Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             .setAction("Action", null).show();
-        Intent intent = new Intent(me, FilterActivity.class);
+        Intent intent = new Intent(me, SimpleFilterActivity.class);
         startActivity(intent);
       }
     });
@@ -103,6 +112,12 @@ public class ExpandableListActivity extends AppCompatActivity {
     updateProductList();
     registerForContextMenu(mListView);
 
+    List<ProductPredicate> predicates = Session.getInstance(this).getProductPredicates();
+    if (predicates!=null) {
+      for (ProductPredicate p : predicates) {
+        Log.d(LOG_TAG, " * predicate: " + p);
+      }
+    }
 
     Button okButton = findViewById(R.id.ok_button);
     okButton.setOnClickListener(new OnClickListener() {
@@ -143,5 +158,16 @@ public class ExpandableListActivity extends AppCompatActivity {
         updateProductList(products);
       }
     });
+
+
+
+
   }
+
+  public void onPause() {
+    super.onPause();
+    Log.d(LOG_TAG, "onPause()");
+    JsonProductStore.getInstance(this).close();
+  }
+
 }

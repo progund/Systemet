@@ -11,6 +11,7 @@ public interface ProductStore {
 
   public List<Product> products();
   public void syncProducts();
+  public void close();
   public void addProductsChangeListener(ProductsChangeListener listener);
 
 }

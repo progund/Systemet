@@ -1,15 +1,17 @@
 package se.juneday.systemet.domain;
 
 import android.util.Log;
+import java.io.Serializable;
 import java.security.acl.LastOwnerException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ProductPredicate implements Predicate<Product>{
+public class ProductPredicate implements Predicate<Product>, Serializable {
 
   private static final String LOG_TAG = ProductPredicate.class.getName();
+  private static final long serialVersionUID = -3316523468375144396L;
 
   @Override
   public boolean test(Product prod) {
@@ -122,6 +124,10 @@ public class ProductPredicate implements Predicate<Product>{
 
   public void setOperation(OPERATIONS operation) {
     this.operation = operation;
+  }
+
+  public String toString() {
+    return " [ " + variable + " | " + operation + " | " + value + " ] ";
   }
 
 }

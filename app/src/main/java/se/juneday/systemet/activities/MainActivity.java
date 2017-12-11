@@ -39,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
             android.R.layout.simple_list_item_1,
             JsonProductStore.getInstance(this).products());
 
-
-
         // Set listView's adapter to the new adapter
         listView.setAdapter(adapter);
     }
@@ -50,6 +48,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d(LOG_TAG, " main act");
        // BolagetParser.printXML2();
 
+    }
+
+    public void onPause() {
+        super.onPause();
+        JsonProductStore.getInstance(this).close();
     }
 
 }

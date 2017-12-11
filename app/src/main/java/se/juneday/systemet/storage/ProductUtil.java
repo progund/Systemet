@@ -17,7 +17,7 @@ public class ProductUtil {
 
   public static List<Product> getProductsFilteredBy(List <Product> products, Predicate<Product> predicate) {
     List<Product> list = products.stream().filter(predicate).collect(Collectors.toList());
-    Log.d(LOG_TAG, " getProductsFilteredBy(): " + products.size() + " => " + list.size());
+    //Log.d(LOG_TAG, " getProductsFilteredBy(): " + products.size() + " => " + list.size());
     return list;
   }
 

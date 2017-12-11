@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  android:orientation="vertical"
   tools:context="se.juneday.systemet.activities.SimpleFilterActivity">
 
   <android.support.design.widget.AppBarLayout
@@ -20,14 +22,31 @@
 
   </android.support.design.widget.AppBarLayout>
 
+  <!--
   <include layout="@layout/content_simple_filter" />
+-->
 
-  <android.support.design.widget.FloatingActionButton
-    android:id="@+id/fab"
+  <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/fab_margin"
-    android:layout_gravity="bottom|end"
-    app:srcCompat="@android:drawable/ic_dialog_email" />
+    android:orientation="vertical">
 
-</android.support.design.widget.CoordinatorLayout>
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal">
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/min_alcohol"/>
+      <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/min_alcohol"
+        />
+    </LinearLayout>
+
+  </LinearLayout>
+
+</LinearLayout>
